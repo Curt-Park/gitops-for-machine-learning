@@ -11,6 +11,7 @@ TBD
 - Install [Argo-Workflows CLI](https://github.com/argoproj/argo-workflows/releases/tag/v3.3.9)
 
 You can install the all prerequites with [Homebrew](https://brew.sh/):
+
 ```bash
 brew install minikube helm argocd argo
 ```
@@ -23,12 +24,13 @@ Create a new SSH key with ECDSA encryption and add it to [GitHub](https://github
 
 ```bash
 ssh-keygen -t ecdsa -b 521 -C "your@email-address.com"
-cat ~/.ssh/id_ecdsa.pub  # show the public key
+cat ~/.ssh/id_ecdsa.pub  # show the public key created
 ```
 
 ## Cluster setup
 
 ### 1. Kubernetes cluster initialization
+
 ```bash
 make cluster # k8s cluster setup and argo-cd installation
 make tunnel  # need to be active for the cluster's LoadBalancer access
@@ -64,7 +66,11 @@ make init-argocd
 ```
 
 ### 3. Install other apps
+Create applications on Argo-CD.
+Argo-CD will watch the git remote branch and synchronize the applications with it if it changes.
+
 ```bash
+make argo-cd
 make argo-workflows
 make minio
 ```
@@ -75,20 +81,60 @@ make minio
 
 You can see the login information as follows.
 
-- For ArgoCD:
+- for Argo-CD:
 ```bash
 # user: admin
 # password:
 kubectl get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode
 ```
 
-- For MinIO:
+- for MinIO:
 ```bash
 # AccessKey
 kubectl get secret minio -o jsonpath='{.data.accesskey}' | base64 --decode
 
 # SecretKey
 kubectl get secret minio -o jsonpath='{.data.secretkey}' | base64 --decode
+```
+
+### 4. Create a rolebinding
+In order for Argo to support features such as artifacts, outputs, access to secrets, etc. it needs to communicate with Kubernetes resources using the Kubernetes API.
+To communicate with the Kubernetes API, Argo uses a ServiceAccount to authenticate itself to the Kubernetes API.
+By default, it runs workflows with the default ServiceAccount.
+Here, we will grant the default ServiceAccount admin privileges.
+
+```bash
+kubectl create rolebinding default-admin --clusterrole=admin --serviceaccount=default:default
+```
+
+## Workflows
+
+### Hello World
+```bash
+argo submit https://raw.githubusercontent.com/argoproj/argo-workflows/master/examples/hello-world.yaml --watch
+
+# How it looks like:
+# wget https://raw.githubusercontent.com/argoproj/argo-workflows/master/examples/hello-world.yaml
+# cat hello-world.yaml
+#
+## apiVersion: argoproj.io/v1alpha1
+## kind: Workflow
+## metadata:
+##   generateName: hello-world-
+##   labels:
+##     workflows.argoproj.io/archive-strategy: "false"
+##   annotations:
+##     workflows.argoproj.io/description: |
+##       This is a simple hello world example.
+##       You can also run it in Python: https://couler-proj.github.io/couler/examples/#hello-world
+## spec:
+##   entrypoint: whalesay
+##   templates:
+##   - name: whalesay
+##     container:
+##       image: docker/whalesay:latest
+##       command: [cowsay]
+##       args: ["hello world"]
 ```
 
 ## Cluster shutdown
