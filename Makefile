@@ -22,8 +22,10 @@ finalize:
 
 # apps
 init-argocd:
-	ARGOCD_PW=$(kubectl get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d) &&\
-		argocd login localhost:8080 --username admin --password $(ARGOCD_PW) --insecure
+	argocd login localhost:8080 \
+		--username admin \
+		--password $(shell kubectl get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d) \
+		--insecure
 	argocd repo add ${REMOTE_REPO} --ssh-private-key-path ~/.ssh/id_ecdsa
 
 argo-cd:
