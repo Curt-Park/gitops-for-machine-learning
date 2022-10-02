@@ -1,0 +1,23 @@
+# see for more details:
+# https://github.com/minio/minio/blob/master/helm/minio/values.yaml
+minio:
+  service:
+    type: LoadBalancer
+    port: 9000
+
+  defaultBucket:
+    enabled: true
+    name: pipeline-registry
+    policy: none
+    puge: false
+
+  ## Create multiple buckets after minio install
+  ## Enabling `defaultBucket` will take priority over this list
+  ##
+  buckets: []
+    # - name: bucket1
+    #   policy: none
+    #   purge: false
+    # - name: bucket2
+    #   policy: none
+    #   purge: false

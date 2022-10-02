@@ -1,0 +1,8 @@
+# see for more details:
+# https://github.com/argoproj/argo-helm/blob/main/charts/argo-workflows/values.yaml
+argo-workflows:
+  server:
+    extraArgs:
+      - --auth-mode=server
+    serviceType: LoadBalancer
+    servicePort: 2746

@@ -1,0 +1,12 @@
+# For more information:
+# https://github.com/argoproj/argo-helm/blob/main/charts/argo-cd/values.yaml
+argo-cd:
+  server:
+    config:
+      repositories: |
+        - type: helm
+          name: argo-cd
+          url: https://argoproj.github.io/argo-helm
+    service:
+      type: LoadBalancer
+      servicePortHttp: 8080
