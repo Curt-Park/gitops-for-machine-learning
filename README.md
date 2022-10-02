@@ -107,7 +107,7 @@ Here, we will grant the default ServiceAccount admin privileges.
 kubectl create rolebinding default-admin --clusterrole=admin --serviceaccount=default:default
 ```
 
-## Workflows
+## Workflow Submission
 
 ### Hello World
 ```bash
@@ -136,6 +136,28 @@ argo submit https://raw.githubusercontent.com/argoproj/argo-workflows/master/exa
 ##       command: [cowsay]
 ##       args: ["hello world"]
 ```
+
+[Argo-Workflows](http://localhost:2746/) will show how it goes.
+<img width="1271" src="https://user-images.githubusercontent.com/14961526/193445810-b09e4503-078a-4e07-974b-0c10c5567990.png">
+
+The container logs:
+```bash
+ _____________
+< hello world >
+ -------------
+    \
+     \
+      \
+                    ##        .
+              ## ## ##       ==
+           ## ## ## ##      ===
+       /""""""""""""""""___/ ===
+  ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~
+       \______ o          __/
+        \    \        __/
+          \____\______/
+```
+
 
 ## Cluster shutdown
 ```bash
